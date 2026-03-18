@@ -98,14 +98,15 @@ echo "Running installer... - Avvio del programma di installazione in corso..."
 
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
-    bash "$MBT_SCRIPT"
+    echo "Opening installer in xterm... - Apertura installer in xterm..."
+    xterm -bg black -fg white -e "$MBT_SCRIPT" &
+    echo
+    echo "Installation completed. - Installazione completata."
+    rm -rf "$TMP"
+    exit 0
 else
     echo -e "${RED}Error: Install_Maximusbat.sh not found!${NC}"
+    rm -rf "$TMP"
     exit 1
 fi
-
-echo
-echo "Installation completed. - Installazione completata."
-
-rm -rf "$TMP"
 ```
