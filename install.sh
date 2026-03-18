@@ -37,12 +37,13 @@ BASE="/userdata/emulators"
 TMP="/tmp/mbt_install"
 URL="https://raw.githubusercontent.com/MIKCPU/Maximusbat-Install-Service-Batocera/main/mbt.zip"
 
+# Controllo internet
 if ! curl -fsSL --connect-timeout 5 https://api.github.com >/dev/null 2>&1; then
     echo -e "${RED}ERROR: No internet connection${NC}"
-    echo -e "${RED}ERRORE: Nessuna connessione internet${NC}"
     exit 1
 fi
 
+# Controlli programmi
 if ! command -v curl >/dev/null 2>&1; then
     echo -e "${RED}ERROR: curl not installed${NC}"
     exit 1
@@ -53,24 +54,20 @@ if ! command -v unzip >/dev/null 2>&1; then
     exit 1
 fi
 
+# Preparazione
 mkdir -p "$TMP"
 cd "$TMP" || exit 1
 
 echo
-echo "Downloading installation package... - Download del pacchetto di installazione in corso..."
+echo "Downloading installation package..."
 
 if ! curl -L -o mbt.zip "$URL"; then
     echo -e "${RED}Download failed!${NC}"
     exit 1
 fi
 
-if [ ! -f mbt.zip ]; then
-    echo -e "${RED}Error: mbt.zip not downloaded.${NC}"
-    exit 1
-fi
-
 echo
-echo "Extracting files... - Estrazione dei file in corso..."
+echo "Extracting files..."
 
 mkdir -p "$BASE"
 
@@ -80,28 +77,40 @@ if ! unzip -o mbt.zip -d "$BASE"; then
 fi
 
 echo
-echo "Fixing script format... - Correzione del formato dello script..."
+echo "Fixing script format..."
+
 find "$BASE/mbt" -type f -name "*.sh" -exec sed -i 's/\r$//' {} \;
 
 chmod +x "$BASE/mbt"/*.sh 2>/dev/null
 chmod +x "$BASE/mbt/Script"/*.sh 2>/dev/null
 
 echo
-echo "Cleaning temporary files... - Pulizia dei file temporanei..."
+echo "Cleaning temporary files..."
 
 rm -f mbt.zip
 
 MBT_SCRIPT="$BASE/mbt/Install_Maximusbat.sh"
 
 echo
-echo "Running installer... - Avvio del programma di installazione in corso..."
+echo "Running installer..."
+
+# Controllo xterm
+if ! command -v xterm >/dev/null 2>&1; then
+    echo -e "${RED}ERROR: xterm not installed${NC}"
+    rm -rf "$TMP"
+    exit 1
+fi
 
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
+
+    echo "Opening installer in xterm..."
+
+    xterm -bg black -fg white -e "cd /userdata/emulators/mbt && ./Install_Maximusbat.sh" &
+
     echo
-    echo "Installation completed. - Installazione completata."
-    echo "Run manually from xterm: - Installa manualmente da xterm:"
-    echo "$MBT_SCRIPT"
+    echo "Installation completed."
+
     rm -rf "$TMP"
     exit 0
 else
@@ -109,4 +118,3 @@ else
     rm -rf "$TMP"
     exit 1
 fi
-```
