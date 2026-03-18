@@ -98,10 +98,10 @@ echo "Running installer... - Avvio del programma di installazione in corso..."
 
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
-    echo "Opening installer in xterm... - Apertura installer in xterm..."
-    xterm -bg black -fg white -e "$MBT_SCRIPT" &
     echo
     echo "Installation completed. - Installazione completata."
+    echo "Run manually from xterm: - Installa manualmente da xterm:"
+    echo "$MBT_SCRIPT"
     rm -rf "$TMP"
     exit 0
 else
