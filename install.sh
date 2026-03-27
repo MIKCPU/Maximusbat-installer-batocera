@@ -16,7 +16,8 @@ echo "                              ##     ##  ##  ##   ##  ##    ## ##        #
 echo "                              ##     ## #### ##    ##  ######  ##         #######"
 echo
 
-echo -e "\e[93m                                          PRESENT  -  PRESENTA\e[0m"
+echo -e "\e[93m$(printf "%50s" "PRESENT  -  PRESENTA")\e[0m"
+
 echo
 
 echo -e "\e[91m"
@@ -29,11 +30,14 @@ echo "           ##     ## ##     ##  ##   ##   ##  ##     ## ##     ## ##    ##
 echo "           ##     ## ##     ## ##     ## #### ##     ##  #######   ######  ########  ##     ##    ##    "
 echo -e "\e[0m"
 
+echo -e "\e[93m$(printf "%50s" "FOR - PER BATOCERA")\e[0m"
+echo
+
 echo
 echo "Downloading MaximusBat Theme Configuration... - Download della configurazione del tema MaximusBat in corso..."
 sleep 2
 
-BASE="/userdata/emulators"
+BASE="/userdata/roms"
 TMP="/tmp/mbt_install"
 URL="https://raw.githubusercontent.com/MIKCPU/Maximusbat-Install-Service-Batocera/main/mbt.zip"
 
@@ -106,7 +110,7 @@ if [ -f "$MBT_SCRIPT" ]; then
 
     echo "Opening installer in xterm..."
 
-    xterm -bg black -fg white -e "cd /userdata/emulators/mbt && ./Install_Maximusbat.sh" &
+    xterm -bg black -fg white -e "cd $BASE/mbt && ./Install_Maximusbat.sh" &
 
     echo
     echo "Installation completed."
