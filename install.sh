@@ -90,7 +90,7 @@ echo "Running installer in terminal..."
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
     # Avvio diretto nel terminale senza xterm
-    cd "$BASE/mbt" && bash ./Install_Maximusbat.sh
+    cd "$BASE/mbt" && exec ./Install_Maximusbat.sh
     echo
     echo "Installation completed."
     rm -rf "$TMP"
