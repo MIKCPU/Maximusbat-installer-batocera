@@ -48,7 +48,7 @@ if ! curl -fsSL --connect-timeout 5 https://api.github.com >/dev/null 2>&1; then
 fi
 
 # Controlli programmi
-for cmd in curl unzip; do
+for cmd in curl unzip xterm; do
     if ! command -v $cmd >/dev/null 2>&1; then
         echo -e "${RED}ERROR: $cmd not installed${NC}"
         exit 1
@@ -57,7 +57,7 @@ done
 
 # Preparazione cartelle
 mkdir -p "$TMP"
-mkdir -p "$BASE/mbt"    # <- qui estraiamo tutto dentro mbt
+mkdir -p "$BASE/mbt"
 cd "$TMP" || exit 1
 
 echo
@@ -86,11 +86,11 @@ rm -f mbt.zip
 MBT_SCRIPT="$BASE/mbt/Install_Maximusbat.sh"
 
 echo
-echo "Running installer in terminal..."
+echo "Running installer in a new terminal window..."
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
-    # Avvio diretto nel terminale senza xterm
-    cd "$BASE/mbt" && exec ./Install_Maximusbat.sh
+    # Apri xterm interattivo
+    xterm -hold -e "$MBT_SCRIPT"
     echo
     echo "Installation completed."
     rm -rf "$TMP"
