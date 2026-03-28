@@ -17,9 +17,7 @@ echo "                              ##     ## #### ##    ##  ######  ##         
 echo
 
 echo -e "\e[93m$(printf "%50s" "PRESENT  -  PRESENTA")\e[0m"
-
 echo
-
 echo -e "\e[91m"
 echo "           ##     ##    ###    ##     ## #### ##     ## ##     ##  ######  ########     ###    ######## "
 echo "           ###   ###   ## ##    ##   ##   ##  ###   ### ##     ## ##    ## ##     ##   ## ##      ##    "
@@ -29,7 +27,6 @@ echo "           ##     ## #########   ## ##    ##  ##     ## ##     ##       ##
 echo "           ##     ## ##     ##  ##   ##   ##  ##     ## ##     ## ##    ## ##     ## ##     ##    ##    "
 echo "           ##     ## ##     ## ##     ## #### ##     ##  #######   ######  ########  ##     ##    ##    "
 echo -e "\e[0m"
-
 echo -e "\e[93m$(printf "%50s" "FOR - PER BATOCERA")\e[0m"
 echo
 
@@ -48,7 +45,7 @@ if ! curl -fsSL --connect-timeout 5 https://api.github.com >/dev/null 2>&1; then
 fi
 
 # Controlli programmi
-for cmd in curl unzip xterm; do
+for cmd in curl unzip; do
     if ! command -v $cmd >/dev/null 2>&1; then
         echo -e "${RED}ERROR: $cmd not installed${NC}"
         exit 1
@@ -57,7 +54,7 @@ done
 
 # Preparazione cartelle
 mkdir -p "$TMP"
-mkdir -p "$BASE/mbt"
+mkdir -p "$BASE/mbt"    # <- estraiamo tutto dentro mbt
 cd "$TMP" || exit 1
 
 echo
@@ -86,11 +83,12 @@ rm -f mbt.zip
 MBT_SCRIPT="$BASE/mbt/Install_Maximusbat.sh"
 
 echo
-echo "Running installer in a new terminal window..."
+echo "Running installer in terminal..."
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
-    # Apri xterm interattivo
-    xterm -hold -e "$MBT_SCRIPT"
+    cd "$BASE/mbt"
+    # Avvio interattivo diretto senza xterm o exec
+    bash -i ./Install_Maximusbat.sh
     echo
     echo "Installation completed."
     rm -rf "$TMP"
