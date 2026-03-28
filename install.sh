@@ -48,73 +48,51 @@ if ! curl -fsSL --connect-timeout 5 https://api.github.com >/dev/null 2>&1; then
 fi
 
 # Controlli programmi
-if ! command -v curl >/dev/null 2>&1; then
-    echo -e "${RED}ERROR: curl not installed${NC}"
-    exit 1
-fi
+for cmd in curl unzip; do
+    if ! command -v $cmd >/dev/null 2>&1; then
+        echo -e "${RED}ERROR: $cmd not installed${NC}"
+        exit 1
+    fi
+done
 
-if ! command -v unzip >/dev/null 2>&1; then
-    echo -e "${RED}ERROR: unzip not installed${NC}"
-    exit 1
-fi
-
-# Preparazione
+# Preparazione cartelle
 mkdir -p "$TMP"
+mkdir -p "$BASE/mbt"    # <- qui estraiamo tutto dentro mbt
 cd "$TMP" || exit 1
 
 echo
 echo "Downloading installation package..."
-
 if ! curl -L -o mbt.zip "$URL"; then
     echo -e "${RED}Download failed!${NC}"
     exit 1
 fi
 
 echo
-echo "Extracting files..."
-
-mkdir -p "$BASE"
-
-if ! unzip -o mbt.zip -d "$BASE"; then
+echo "Extracting files into $BASE/mbt ..."
+if ! unzip -o mbt.zip -d "$BASE/mbt"; then
     echo -e "${RED}Extraction failed!${NC}"
     exit 1
 fi
 
 echo
-echo "Fixing script format..."
-
+echo "Fixing script format and permissions..."
 find "$BASE/mbt" -type f -name "*.sh" -exec sed -i 's/\r$//' {} \;
-
-chmod +x "$BASE/mbt"/*.sh 2>/dev/null
-chmod +x "$BASE/mbt/Script"/*.sh 2>/dev/null
+find "$BASE/mbt" -type f -name "*.sh" -exec chmod +x {} \;
 
 echo
 echo "Cleaning temporary files..."
-
 rm -f mbt.zip
 
 MBT_SCRIPT="$BASE/mbt/Install_Maximusbat.sh"
 
 echo
-echo "Running installer..."
-
-# Controllo xterm
-if ! command -v xterm >/dev/null 2>&1; then
-    echo -e "${RED}ERROR: xterm not installed${NC}"
-    rm -rf "$TMP"
-    exit 1
-fi
-
+echo "Running installer in terminal..."
 if [ -f "$MBT_SCRIPT" ]; then
     chmod +x "$MBT_SCRIPT"
-
-    echo "Opening installer in xterm..."
-
-    xterm -bg black -fg white -e "cd $BASE/mbt && ./Install_Maximusbat.sh" &
-
+    # Avvio diretto nel terminale senza xterm
+    cd "$BASE/mbt" && bash ./Install_Maximusbat.sh
     echo
     echo "Installation completed."
-
     rm -rf "$TMP"
     exit 0
 else
